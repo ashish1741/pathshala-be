@@ -14,6 +14,7 @@ import {
 } from "../utilis/jwt";
 import { redis } from "../utilis/redis";
 import { getUserById } from "../services/user.services";
+import cloudinary from "cloudinary";
 
 //register User
 
@@ -120,6 +121,8 @@ export const activateUser = catchAsyncError(
         email,
         password,
       });
+
+      console.log(`register user is :${user}`);
 
       res.status(201).json({
         success: true,
@@ -331,7 +334,6 @@ export const updatePassword = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { oldPassword, newPassword } = req.body as IUpadtePassword;
-      console.log(req.body as IUpadtePassword);
 
       if (!oldPassword || !newPassword) {
         console.log(
@@ -373,27 +375,68 @@ export const updatePassword = catchAsyncError(
 
 // update profile picture
 
-interface IUpadteProfile {
+interface IUpadteProfilePicture {
   avatar: string;
 }
-
 
 export const updateProfilePicture = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const {avatar} = req.body as IUpadteProfile;
-
-      const user = req.user;
-
-      // if (user?avatar?.public_id) {
-      //   await
-
-        
-      // }
-
-
+      console.log('run try block');
       
+      const { avatar } = req.body ;
+      console.log(`req.body is : ${req.body}` );
+      
+
+      const userId = req?.user?._id;
+      const user = await userModel.findById(userId);
+      if (avatar && user) {
+        
+        // if user have one  avatar
+        if (user?.avatar?.public_id) {
+
+
+          //first delete the old image 
+          await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
+          const mycloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "avatars",
+            width: 150,
+          });
+          user.avatar = {
+            public_id: mycloud.public_id,
+            url: mycloud.secure_url,
+          };
+          
+        } else {
+          console.log(`run else part`);
+          
+          const mycloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "avatar",
+            width: 150,
+          });
+          console.log(`mycloud is : ${mycloud}`);
+          
+          user.avatar = {
+            public_id: mycloud.public_id,
+            url: mycloud.secure_url,
+          };
+
+          console.log(`avatar details is : ${user.avatar}`);
+          
+        }
+      }
+
+      await user?.save();
+      await redis.set(userId,JSON.stringify(user));
+      res.status(200).json({
+        sucess:true,
+        user
+      })
+
+
     } catch (error: any) {
+      console.log(`${next(new ErrorHandler(error.message, 400))}`);
+      
       return next(new ErrorHandler(error.message, 400));
     }
   }
