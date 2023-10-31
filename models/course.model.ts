@@ -22,13 +22,12 @@ interface ICourseData extends Document {
     title: string;
     description: string;
     videoUrl: string;
-    videoThumail: object;
     videoSection: string;
     videoLength: number;
     videoPlayer: string;
     Links: ILinks[];
     suggestion: string;
-    Question: IComment[];
+    question: IComment[];
 }
 
 interface Icourse extends Document {
@@ -77,14 +76,13 @@ const commentSchema = new Schema<IComment>({
 
 const courseDataSchema = new Schema<ICourseData>({
     videoUrl: String,
-    videoThumail: Object,
     title: String,
     videoSection: String,
     videoLength: Number,
     videoPlayer: String,
     Links: [LinkSchema],
     suggestion: String,
-    Question: [commentSchema],
+    question: [commentSchema],
 
 });
 
@@ -116,11 +114,9 @@ const courseSchema = new Schema<Icourse>({
     },
     thumnail: {
         public_id: {
-            required: true,
             type: String,
         },
         url: {
-            required: true,
             type: String,
         },
     },
@@ -152,7 +148,7 @@ const courseSchema = new Schema<Icourse>({
         default: 0,
     },
 
-    assigment:[assigmentSchema]
+    // assigment:[assigmentSchema]
 });
 
 
