@@ -45,13 +45,24 @@ interface Icourse extends Document {
     courseData: ICourseData[];
     ratings?: number;
     purchased?: number;
-    assigment:{title:any}[]
+    assigment:{title:any}[],
+    submission:{title:any}[],
 }
 
-interface Iassigment extends Document {
-    questions: { title: string }[];
-    marks: number;
-    result: string;
+interface IAssignment extends Document {
+    title: string;
+    description: string;
+    dueDate: Date;
+    maxScore: number;
+    courseID: string;
+    submissions: ISubmission[];
+};
+interface ISubmission {
+    userID: string;
+    submissionDate: Date;
+    fileURL: string;
+    score: number;
+    feedback: string;
 }
 
 const reviewSchema = new Schema<IReview>({
@@ -86,14 +97,20 @@ const courseDataSchema = new Schema<ICourseData>({
 
 });
 
-const assigmentSchema = new Schema<Iassigment>({
-    questions: [{ title: String }],
-    result: String,
-
-    marks: {
-        type: Number,
-        default: 0,
-    },
+const SubmissionSchema = new Schema<ISubmission>({
+    // userID: { type: Schema.Types.ObjectId, ref: 'User' },
+    submissionDate: { type: Date, default: Date.now },
+    fileURL: String,
+    score: Number,
+    feedback: String
+});
+const AssignmentSchema = new Schema<IAssignment>({
+    title: String,
+    description: String,
+    dueDate: Date,
+    maxScore: Number,
+    // courseID: { type: Schema.Types.ObjectId, ref: 'Course' },
+    submissions: [SubmissionSchema]
 });
 
 const courseSchema = new Schema<Icourse>({
@@ -137,6 +154,8 @@ const courseSchema = new Schema<Icourse>({
     benefits: [{ title: String }],
     reviews: [reviewSchema],
     courseData: [courseDataSchema],
+    assigment:[AssignmentSchema],
+    submission:[SubmissionSchema],
     prerequistites: [{ title: String }],
 
     ratings: {
