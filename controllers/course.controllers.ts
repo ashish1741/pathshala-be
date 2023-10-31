@@ -33,3 +33,9 @@ export const uploadCourse = catchAsyncError(
         }
     }
 );
+
+//edit course 
+
+export const editCourse = catchAsyncError(async(req:Request,res:Response,next:NextFunction) =>{
+    
+})
