@@ -14,6 +14,7 @@ import {
 } from "../utilis/jwt";
 import { redis } from "../utilis/redis";
 import { getUserById } from "../services/user.services";
+import cloudinary from "cloudinary"
 
 //register User
 
@@ -371,30 +372,67 @@ export const updatePassword = catchAsyncError(
   }
 );
 
-// update profile picture
 
-interface IUpadteProfile {
+
+// update profile picture
+interface IUpadteProfilePicture {
   avatar: string;
 }
-
 
 export const updateProfilePicture = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const {avatar} = req.body as IUpadteProfile;
+      console.log("run try block");
 
-      const user = req.user;
+      const { avatar } = req.body;
+      console.log(`req.body is : ${req.body}`);
 
-      // if (user?avatar?.public_id) {
-      //   await
+      const userId = req?.user?._id;
+      const user = await userModel.findById(userId);
+      if (avatar && user) {
+        // if user have one  avatar
+        if (user?.avatar?.public_id) {
+          //first delete the old image
+          await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
+          const mycloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "avatars",
+            width: 150,
+          });
+          user.avatar = {
+            public_id: mycloud.public_id,
+            url: mycloud.secure_url,
+          };
+        } else {
+          console.log(`run else part`);
 
-        
-      // }
+          const mycloud = await cloudinary.v2.uploader.upload(avatar, {
+            folder: "avatar",
+            width: 150,
+          });
+          console.log(`mycloud is : ${mycloud}`);
 
+          user.avatar = {
+            public_id: mycloud.public_id,
+            url: mycloud.secure_url,
+          };
 
-      
+          console.log(`avatar details is : ${user.avatar}`);
+        }
+      }
+
+      await user?.save();
+      await redis.set(userId, JSON.stringify(user));
+      res.status(200).json({
+        sucess: true,
+        user,
+      });
     } catch (error: any) {
+      console.log(`${next(new ErrorHandler(error.message, 400))}`);
+
       return next(new ErrorHandler(error.message, 400));
     }
   }
 );
+
+
+

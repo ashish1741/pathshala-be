@@ -2,9 +2,9 @@ require("dotenv").config();
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import {ErrorMiddleware} from "./middleware/error";
+import { ErrorMiddleware } from "./middleware/error";
 import userRouter from "./routes/user.route";
-import { activateUser } from "./controllers/user.controllers";
+import courseRouter from "./routes/course.route"
 
 export const app = express();
 //body parser
@@ -24,7 +24,8 @@ app.use(
 
 
 //route
-app.use("/api/v1",userRouter)
+app.use("/api/v1", userRouter)
+app.use("/api/v1", courseRouter)
 
 //testing API
 
