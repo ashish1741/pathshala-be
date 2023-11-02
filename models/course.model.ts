@@ -13,7 +13,7 @@ interface IReview extends Document {
     commentReplies: IComment[];
 }
 
-interface ILinks extends Document {
+interface Ilinks extends Document {
     title: string;
     url: string;
 }
@@ -25,7 +25,7 @@ interface ICourseData extends Document {
     videoSection: string;
     videoLength: number;
     videoPlayer: string;
-    Links: ILinks[];
+    links: Ilinks[];
     suggestion: string;
     question: IComment[];
 }
@@ -40,7 +40,7 @@ interface Icourse extends Document {
     level: string;
     demoUrl: string;
     benefits: { title: string }[];
-    prerequistites: { title: String }[];
+    prerequistites: { title: string }[];
     reviews: IReview[];
     courseData: ICourseData[];
     ratings?: number;
@@ -74,7 +74,7 @@ const reviewSchema = new Schema<IReview>({
     comment: String,
 });
 
-const LinkSchema = new Schema<ILinks>({
+const linkschema = new Schema<Ilinks>({
     title: String,
     url: String,
 });
@@ -88,10 +88,11 @@ const commentSchema = new Schema<IComment>({
 const courseDataSchema = new Schema<ICourseData>({
     videoUrl: String,
     title: String,
+    description:String,
     videoSection: String,
     videoLength: Number,
     videoPlayer: String,
-    Links: [LinkSchema],
+    links: [linkschema],
     suggestion: String,
     question: [commentSchema],
 
@@ -152,11 +153,11 @@ const courseSchema = new Schema<Icourse>({
     },
 
     benefits: [{ title: String }],
+    prerequistites: [{ title: String }],
     reviews: [reviewSchema],
     courseData: [courseDataSchema],
     assigment:[AssignmentSchema],
     submission:[SubmissionSchema],
-    prerequistites: [{ title: String }],
 
     ratings: {
         type: Number,
