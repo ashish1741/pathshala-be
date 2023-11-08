@@ -41,7 +41,11 @@ export const uploadCourse = catchAsyncError(
 
 export const editCourse = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log(`dqllll`);
+    
     try {
+      console.log(`try block run`);
+      
       const data = req.body;
       const thumbnail = data.thumbnail;
       if (thumbnail) {
@@ -68,6 +72,8 @@ export const editCourse = catchAsyncError(
         course,
       });
     } catch (error: any) {
+      console.log(`${next(new ErrorHandler(error.message, 500))}`);
+      
       return next(new ErrorHandler(error.message, 500));
     }
   }
@@ -306,3 +312,77 @@ export const addAnswer = catchAsyncError(
     }
   }
 );
+
+
+// add review on the course
+
+interface IAddReview {
+  review: string;
+  rating:Number;
+  userId : string;
+}
+
+export const addReview = catchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  try {
+    
+     const userCourseList  = req.user?.courses;
+     const courseID  = req.params.id;
+    
+
+     const courseExist =  userCourseList?.some((course:any)=>course._id.toString()===courseID.toString());
+     if (!courseExist) {
+      console.log(`${ next(new ErrorHandler('You are not eligibal to access this course',400))}`);
+      
+      return next(new ErrorHandler('You are not eligibal to access this course',400))
+     }
+
+     const course = await CourseModel.findById(courseID);
+
+     const { review,rating } = req.body as IAddReview;
+
+     const reviewData:any = {
+      user:req.user,
+      rating,
+      Comment:review,
+
+     };
+
+      course?.reviews.push(reviewData)
+    
+      let avg = 0;
+
+      course?.reviews.forEach((rev:any)=>{
+        avg += rev.rating;
+      });
+
+      if (course) {
+        course.ratings = avg / course.reviews.length
+        
+      }
+
+      await course?.save();
+
+      const notification  = {
+        title:"New Review Received",
+        message:`${req.user?.name} has given a review in a ${course?.name}`
+      }
+
+
+      res.status(200).json({
+        success : true,
+        course,
+      });
+       
+
+
+
+  } catch (error: any) {
+    console.log(`${next(new ErrorHandler(error.message, 500))}`);
+    return next(new ErrorHandler(error.message, 500));
+  }
+
+
+})
+
+
+
