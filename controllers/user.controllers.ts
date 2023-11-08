@@ -14,7 +14,7 @@ import {
 } from "../utilis/jwt";
 import { redis } from "../utilis/redis";
 import { getUserById } from "../services/user.services";
-import cloudinary from "cloudinary";
+import cloudinary from "cloudinary"
 
 //register User
 
@@ -373,6 +373,8 @@ export const updatePassword = catchAsyncError(
   }
 );
 
+
+
 // update profile picture
 
 interface IUpadteProfilePicture {
@@ -433,3 +435,6 @@ export const updateProfilePicture = catchAsyncError(
     }
   }
 );
+
+
+
