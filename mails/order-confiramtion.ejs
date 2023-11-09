@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <style>
+        body {
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-sm {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .course-info {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .course-info table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .course-info td, .course-info th {
+            padding: 10px 20px;
+            text-align: left;
+        }
+
+        .course-info th {
+            background-color: #eaeaea;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .footer {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .footer a {
+            color: #4285f4;
+            text-decoration: none;
+        }
+
+        .banner {
+            background: #00468b;
+            color: #fff;
+            border-radius: 8px 8px 0 0;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+        }
+
+        .motivation {
+            background: #e0f0fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .motivation p {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="banner">
+            <h1>Pathshala Order Confirmation</h1>
+            <p>Your gateway to educational excellence!</p>
+        </div>
+
+        <div class="course-info">
+            <h3>Thank you for your purchase. Here are your order details:</h3>
+            <table>
+                <tr>
+                    <th>Order code:</th>
+                    <td><%= order._id %></td>
+                </tr>
+                <tr>
+                    <th>Order Date:</th>
+                    <td><%= order.date %></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <th>Item</th>
+                    <th>Qty</th>
+                    <th>Cost</th>
+                </tr>
+                <tr>
+                    <td><%= order.name %></td>
+                    <td>1</td>
+                    <td>$<%= order.price %></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Subtotal:</td>
+                    <td>$<%= order.price %></td>
+                </tr>
+                <tr>
+                    <td colspan="2">Total:</td>
+                    <td>$<%= order.price %></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="motivation">
+            <p>Education is not the filling of a pail, but the lighting of a fire. Keep your curiosity alive and your focus unwavering. Every small step counts in your journey towards knowledge and success!</p>
+        </div>
+
+        <div class="footer">
+            <p>If you have any questions, please contact our support team at <a href="mailto:support@pathshala.com">support@pathshala.com</a></p>
+            <p>&copy; 2023 Pathshala. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

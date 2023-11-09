@@ -20,9 +20,7 @@ const OrderSchema = new Schema<IOrder>(
       type: Object,
       // required:true
     },
-  },
-  { timestamps: true }
-);
+  },{ timestamps: true });
 
 const OrderModel: Model<IOrder> = mongoose.model("Order", OrderSchema);
 
