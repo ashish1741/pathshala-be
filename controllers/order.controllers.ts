@@ -8,7 +8,7 @@ import path from "path";
 import ejs from "ejs";
 import sendMail from "../utilis/sendMail";
 import NotificationModel from "../models/notification.model";
-import { newOrder} from "../services/order.services";
+import { getAllOrderService, newOrder } from "../services/order.services";
 
 //create order
 
@@ -17,8 +17,8 @@ export const createOrder = catchAsyncError(
     console.log(`createOrder is called`);
 
     try {
-        console.log(`run try catch block`);
-        
+      console.log(`run try catch block`);
+
       const { courseId, payment_info } = req.body as IOrder;
       const user = await userModel.findById(req.user?._id);
 
@@ -28,8 +28,13 @@ export const createOrder = catchAsyncError(
       );
 
       if (courseExistInUser) {
-        console.log(`${next(new ErrorHandler("You have already enrolled in this course", 400))}`);
-        return next(new ErrorHandler("You have already enrolled in this course", 400)
+        console.log(
+          `${next(
+            new ErrorHandler("You have already enrolled in this course", 400)
+          )}`
+        );
+        return next(
+          new ErrorHandler("You have already enrolled in this course", 400)
         );
       }
 
@@ -45,7 +50,6 @@ export const createOrder = catchAsyncError(
         userId: user?.id,
         payment_info,
       };
-
 
       const mailData = {
         order: {
@@ -84,28 +88,31 @@ export const createOrder = catchAsyncError(
 
       await NotificationModel.create({
         user: user?._id,
-        title:"New Order",
-        message:`you have a new order from ${course?.name}`,
+        title: "New Order",
+        message: `you have a new order from ${course?.name}`,
       });
 
-
-
       await course.save();
-       
-      newOrder(data,res,next)
 
-   
-
-
-
-
-   
-
-
+      newOrder(data, res, next);
     } catch (error: any) {
-        console.log(`${next(new ErrorHandler(error.message, 500))}`);
-        
+      console.log(`${next(new ErrorHandler(error.message, 500))}`);
+
       return next(new ErrorHandler(error.message, 500));
+    }
+  }
+);
+
+// get all course -- only admin
+
+export const getAllOrders = catchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      getAllOrderService(res);
+    } catch (error: any) {
+      console.log(`${next(new ErrorHandler(error.message, 400))}`);
+
+      return next(new ErrorHandler(error.message, 400));
     }
   }
 );
