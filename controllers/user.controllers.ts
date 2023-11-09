@@ -13,8 +13,12 @@ import {
   sendToken,
 } from "../utilis/jwt";
 import { redis } from "../utilis/redis";
-import { getUserById } from "../services/user.services";
-import cloudinary from "cloudinary"
+import {
+  getAllUserService,
+  getUserById,
+  updateUserRoleService,
+} from "../services/user.services";
+import cloudinary from "cloudinary";
 
 //register User
 
@@ -373,8 +377,6 @@ export const updatePassword = catchAsyncError(
   }
 );
 
-
-
 // update profile picture
 
 interface IUpadteProfilePicture {
@@ -436,5 +438,69 @@ export const updateProfilePicture = catchAsyncError(
   }
 );
 
+// get all user -- only admin
+
+export const getAllUser = catchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      console.log(`run try block`);
+
+      getAllUserService(res);
+    } catch (error: any) {
+      console.log(`${next(new ErrorHandler(error.message, 400))}`);
+
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+//update user role -- only for admin
+
+export const updateUserRole = catchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id, role } = req.body;
+
+      updateUserRoleService(res, id, role);
+    } catch (error: any) {
+      console.log(`${next(new ErrorHandler(error.message, 400))}`);
+
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
+
+//delete user  ---only for admin
+
+export const deleteUser = catchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  try {
+    console.log(`try run block`);
+    
+    const {id} = req.params
+
+    const user = await userModel.findById(id);
+
+    if (!user) {
+      return next(new ErrorHandler("User doesn't exist", 404));
+      
+    }
+
+    await user.deleteOne({id});
+    await redis.del(id);
+
+    res.status(200).json({
+      success:true,
+      message:"User deleted sucessfully"
+
+    });
+
+    
+  } catch (error: any) {
+    console.log(`${next(new ErrorHandler(error.message, 400))}`);
+
+    return next(new ErrorHandler(error.message, 400));
+  }
+
+})
 
 

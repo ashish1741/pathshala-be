@@ -10,6 +10,9 @@ import {
   updateUserInfo,
   updatePassword,
   updateProfilePicture,
+  getAllUser,
+  updateUserRole,
+  deleteUser,
 } from "../controllers/user.controllers";
 import { isAutheticated } from "../middleware/auth";
 
@@ -25,5 +28,8 @@ userRouter.post("/social-auth", socialAuth);
 userRouter.put("/update-user-info", isAutheticated, updateUserInfo);
 userRouter.put("/update-user-password", isAutheticated, updatePassword);
 userRouter.put("/update-user-profile", isAutheticated, updateProfilePicture);
+userRouter.get("/get-all-user", isAutheticated, getAllUser);
+userRouter.put("/update-user-role", isAutheticated, updateUserRole);
+userRouter.delete("/delete-user/:id", isAutheticated, deleteUser);
 
 export default userRouter;
