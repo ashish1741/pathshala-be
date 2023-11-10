@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <style>
         body {
             font-family: 'Arial', 'Helvetica', sans-serif;
-            background-color: #f7f7f7;
+            background-color: #f8f9fa;
             margin: 0;
             padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
         }
 
         .container {
             max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
             text-align: center;
         }
 
@@ -24,40 +28,68 @@
             margin-bottom: 20px;
         }
 
-        h1 {
-            color: #333;
-            font-size: 24px;
+        .header {
+            color: #182444;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
         }
 
-        p {
-            color: #666;
+        .message {
+            color: #555;
             font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .code-box {
+            background-color: #ffcc00;
+            color: #333;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 5px;
             margin: 20px 0;
         }
 
-        a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
         .btn {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 3px;
+            background-color: rgb(4, 33, 63);
+            color: rgb(255, 255, 255)878;
+            padding: 12px 24px;
+            border-radius: 5px;
             text-decoration: none;
             display: inline-block;
+            margin-top: 20px;
+            font-weight: bolder;
+        }
+
+        .footer {
+            margin-top: 30px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .course-link {
+            color: #007bff;
+            font-weight: bold;
+            text-decoration: none;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <img src="https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.iconfinder.com%2F&psig=AOvVaw3_TLVq-bf-_Iy_w2SAc9ZW&ust=1697963938911000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCPDv2d7ehoIDFQAAAAAdAAAAABAE" alt="Pathshala Logo" class="logo">
-        <h1>Welcome to Pathshala!</h1>
-        <p>Hello <span style="color:#182444; font-weight: bolder; text-transform: capitalize;"><%= user.name %></span></p>
-        <p>Your activation code is : <span style="background-color:#000000; color:#ffffff; letter-spacing: 1rem; padding: .5rem; "><%= activationCode %> </span> <br /> This code will be valid for only 5 minutes</p>
-        <p>Thank you for registering with Pathshala !! <br /> Wish You have a great e-learning experience </p>
+        <img src="https://your-logo-url.png" alt="Pathshala Logo" class="logo">
+        <div class="header">Welcome to Pathshala!</div>
+        <h2>Hello ,<span style="color:#182444; font-weight: bolder; text-transform: capitalize;"><%= user.name %></span></h2>
+        <p class="message">Your activation code:</p>
+        <div class="code-box"><%= activationCode %></div>
+        <p class="message">This code will be valid for only 5 minutes.</p>
+        <p class="message">Thank you for registering with Pathshala! Wish you a great e-learning experience.</p>
+        <a href="https://your-pathshala-url.com" class="btn" target="_blank">Explore Courses</a>
+        <div class="footer">
+            <p>Follow us on <a href="https://twitter.com/pathshala" target="_blank">Twitter</a> and <a href="https://facebook.com/pathshala" target="_blank">Facebook</a> for updates!</p>
+            <p>Pathshala - Your Learning Companion</p>
+        </div>
     </div>
 </body>
+
 </html>
