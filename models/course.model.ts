@@ -170,7 +170,7 @@ const courseSchema = new Schema<Icourse>({
         default: 0,
     },
 
-});
+},{timestamps:true});
 
 
 

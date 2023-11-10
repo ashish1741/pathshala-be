@@ -1,38 +1,33 @@
-import ErrorHandler from "../utilis/ErrorHandler";
 import { NextFunction, Request, Response } from "express";
+import ErrorHandler from "../utilis/ErrorHandler";
 
 export const ErrorMiddleware = (
-  err:any,
+  err: any,
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   err.statusCode = err.statusCode || 500;
-  err.message    = err.message || "Internet Server Error";
+  err.message = err.message || "Internal Server Error";
 
-//   //wrong mongob id error
-
+  // Handle specific errors
   if (err.name === "CastError") {
-    const message = `Resource Not Found . Invalid :${err.path} `;
+    const message = `Resource Not Found. Invalid: ${err.path}`;
     err = new ErrorHandler(message, 400);
-  }
-
-//   // dulipacte key error
-  if (err.name === 11000) {
-    const message = `Resource Not Found . Invalid :${err.path} `;
+  } else if (err.code === 11000) {
+    const message = `Duplicate Key Error`;
     err = new ErrorHandler(message, 11000);
+  } else if (err.name === "JsonWebTokenError") {
+    const message = `Invalid JWT`;
+    err = new ErrorHandler(message, 401);
+  } else if (err.name === "TokenExpiredError") {
+    const message = `JWT Expired`;
+    err = new ErrorHandler(message, 401);
   }
 
-//   //wrong Jwt error
-  if (err.name === "jsonWebTokenError") {
-    const message = `Resource Not Found . Invalid :${err.path} `;
-    err = new ErrorHandler(message, 11000);
-  }
-
-//   //jwt expire error
-
-  if (err.name === "TokenExpiredError") {
-    const message = `Resource Not Found . Invalid :${err.path} `;
-    err = new ErrorHandler(message, 11000);
-  }
+  // Send JSON response
+  res.status(err.statusCode).json({
+    success: false,
+    error: err.message,
+  });
 };
