@@ -14,10 +14,8 @@ import { getAllOrderService, newOrder } from "../services/order.services";
 
 export const createOrder = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(`createOrder is called`);
 
     try {
-      console.log(`run try catch block`);
 
       const { courseId, payment_info } = req.body as IOrder;
       const user = await userModel.findById(req.user?._id);
@@ -28,25 +26,17 @@ export const createOrder = catchAsyncError(
       );
 
       if (courseExistInUser) {
-        console.log(
-          `${next(
-            new ErrorHandler("You have already enrolled in this course", 400)
-          )}`
-        );
-        return next(
-          new ErrorHandler("You have already enrolled in this course", 400)
-        );
+        return next(new ErrorHandler("You have already enrolled in this course", 400));
       }
 
       const course = await CourseModel.findById(courseId);
 
       if (!course) {
-        console.log(`${next(new ErrorHandler("course does not found", 400))}`);
         return next(new ErrorHandler("course does not found", 400));
       }
 
       const data: any = {
-        course_Id: course._id,
+        courseId: course._id,
         userId: user?.id,
         payment_info,
       };
@@ -79,7 +69,6 @@ export const createOrder = catchAsyncError(
           });
         }
       } catch (error: any) {
-        console.log(`${next(new ErrorHandler(error.message, 500))}`);
         return next(new ErrorHandler(error.message, 500));
       }
 
@@ -95,23 +84,23 @@ export const createOrder = catchAsyncError(
       await course.save();
 
       newOrder(data, res, next);
-    } catch (error: any) {
-      console.log(`${next(new ErrorHandler(error.message, 500))}`);
 
+
+    }
+    
+    catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
 );
 
-// get all course -- only admin
+// get all order -- only admin
 
 export const getAllOrders = catchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       getAllOrderService(res);
     } catch (error: any) {
-      console.log(`${next(new ErrorHandler(error.message, 400))}`);
-
       return next(new ErrorHandler(error.message, 400));
     }
   }
